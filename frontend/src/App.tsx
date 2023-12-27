@@ -1,20 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
-import { Button } from 'react-bootstrap';
+import { Note } from './models/note';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Hi Mom!
-        </p>
-        <Button>Hey</Button>
-      </header>
-    </div>
-  );
+  const [notes, setNotes] = useState<Note[]>([]);
+
+  useEffect(() => {
+    const loadNotes = async () => {
+      try {
+        const response = await fetch('/api/notes', {
+          method: 'GET',
+        });
+        const notes = await response.json();
+        setNotes(notes);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    loadNotes();
+  }, []);
+
+  return <div className='App'>{JSON.stringify(notes)}</div>;
 }
 
 export default App;
