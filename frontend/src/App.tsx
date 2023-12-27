@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import './App.css';
-import { Note } from './models/note';
+import { useEffect, useState } from 'react';
+import { Note as NoteModel } from './models/note';
+import Note from './components/Note';
+import { Container, Row } from 'react-bootstrap';
 
 function App() {
-  const [notes, setNotes] = useState<Note[]>([]);
+  const [notes, setNotes] = useState<NoteModel[]>([]);
 
   useEffect(() => {
     const loadNotes = async () => {
@@ -20,7 +21,15 @@ function App() {
     loadNotes();
   }, []);
 
-  return <div className='App'>{JSON.stringify(notes)}</div>;
+  return (
+    <Container>
+      <Row xs={1} md={2} xl={3}>
+        {notes.map((note) => (
+          <Note note={note} key={note._id} />
+        ))}
+      </Row>
+    </Container>
+  );
 }
 
 export default App;
