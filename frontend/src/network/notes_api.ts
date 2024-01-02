@@ -1,4 +1,5 @@
 import { Note } from '../models/note';
+import { User } from '../models/user';
 
 const fetchData = async (input: RequestInfo, init?: RequestInit) => {
   const response = await fetch(input, init);
@@ -11,11 +12,55 @@ const fetchData = async (input: RequestInfo, init?: RequestInit) => {
   }
 };
 
+export const getLoggedInUser = async (): Promise<User> => {
+  const response = await fetchData('/api/users', {
+    method: 'GET',
+  });
+  return response.json();
+};
+
+export interface SignupCredentials {
+  username: string;
+  email: string;
+  password: string;
+}
+
+export const signUp = async (credentials: SignupCredentials): Promise<User> => {
+  const response = await fetchData('/api/users/signup', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(credentials),
+  });
+  return response.json();
+};
+
+export interface LoginCredentials {
+  username: string;
+  password: string;
+}
+
+export const login = async (credentials: LoginCredentials): Promise<User> => {
+  const response = await fetchData('/api/users/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(credentials),
+  });
+  return response.json();
+};
+
+export const logout = async () => {
+  await fetchData('/api/users/logout', { method: 'POST' });
+};
+
 export const fetchNotes = async (): Promise<Note[]> => {
   const response = await fetchData('/api/notes', {
     method: 'GET',
   });
-  return await response.json();
+  return response.json();
 };
 
 export interface NoteInput {
